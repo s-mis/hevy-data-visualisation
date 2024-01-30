@@ -223,6 +223,7 @@ function drawradialBarchart(){
       .attr("transform", "rotate(" + ((x(i) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (innerRadius) + ",0)")
     .append("text")
       .text(i)
+      .attr("class","text")
       .attr("transform", (x(i) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)")
       .style("font-size", "10px")
       .attr("alignment-baseline", "middle")
@@ -362,7 +363,7 @@ function drawlineCharts() {
 
       
   lineChartsArea1.append("text")
-    .attr("class", "text-label")
+    .attr("class","text")
     .attr("x", x(previous_selected_week) +  (selected_week < 26 ? +20 : -70))
     .attr("y", height - 15) 
     .text("Bench Press")
@@ -374,7 +375,7 @@ function drawlineCharts() {
 
 
   lineChartsArea1.append("text")
-    .attr("class", "text-label")
+    .attr("class", "text")
     .attr("x", x(previous_selected_week) +  (selected_week < 26 ? +20 : -40))
     .attr("y", 15) 
     .text(maxPerWeekBench.get(+selected_week) === undefined ? "No data" : ((Math.round( maxPerWeekBench.get(+selected_week) * 100) / 100).toFixed(2) + " kg"))
@@ -409,7 +410,7 @@ function drawlineCharts() {
       .attr("x2", x(selected_week));
 
   lineChartsArea2.append("text")
-    .attr("class", "text-label")
+    .attr("class", "text")
     .attr("x", x(previous_selected_week) +  (selected_week < 26 ? +20 : -45))
     .attr("y", height - 15) 
     .text("Deadlift")
@@ -420,7 +421,7 @@ function drawlineCharts() {
       .attr("x", x(selected_week) + (selected_week < 26 ? +20 : -45));
 
   lineChartsArea2.append("text")
-    .attr("class", "text-label")
+    .attr("class", "text")
     .attr("x", x(previous_selected_week) +  (selected_week < 26 ? +20 : -50))
     .attr("y", 15) 
     .text(maxPerWeekDead.get(+selected_week) === undefined ? "No data" : ((Math.round( maxPerWeekDead.get(+selected_week) * 100) / 100).toFixed(2) + " kg"))
@@ -455,7 +456,7 @@ function drawlineCharts() {
       .attr("x2", x(selected_week));
 
   lineChartsArea3.append("text")
-    .attr("class", "text-label")
+    .attr("class", "text")
     .attr("x", x(previous_selected_week) +  (selected_week < 26 ? +20 : -30))
     .attr("y", height - 15) 
     .text("Squat")
@@ -466,7 +467,7 @@ function drawlineCharts() {
       .attr("x", x(selected_week) + (selected_week < 26 ? +20 : -30));
 
   lineChartsArea3.append("text")
-    .attr("class", "text-label")
+    .attr("class", "text")
     .attr("x", x(previous_selected_week) +  (selected_week < 26 ? +20 : -50))
     .attr("y", 15) 
     .text(maxPerWeekSquat.get(+selected_week) === undefined ? "No data" : ((Math.round( maxPerWeekSquat.get(+selected_week) * 100) / 100).toFixed(2) + " kg"))
@@ -579,8 +580,8 @@ function drawPolarChart(){
     //console.log(key, textRotate);
     textG.append("text")
       .text(key+": "+curr_value)
+      .attr("class","text")
       .attr("transform", "rotate("+textRotate+")")
-      .style("font-size", "12px")
       .attr("alignment-baseline", "middle")
     
     
@@ -754,7 +755,7 @@ function drawPictogramsArea(){
     .attr("y2", height-scale(deadY));
 
   pictogramsArea.append("text")
-    .attr("class", "text-label")
+    .attr("class", "textpictograms")
     .attr("x", 0)
     .attr("y", height-5) 
     .text((0).toFixed(2)+"/"+2.5*myBw+"kg")
@@ -773,7 +774,7 @@ function drawPictogramsArea(){
       });
 
   pictogramsArea.append("text")
-    .attr("class", "text-label")
+    .attr("class", "textpictograms")
     .attr("x", 0)
     .attr("y", height+15) 
     .text((0).toFixed(2)+"%")
@@ -806,7 +807,7 @@ function drawPictogramsArea(){
     .attr("y2", height-scale(squatY));
   
    pictogramsArea.append("text")
-    .attr("class", "text-label")
+    .attr("class", "textpictograms")
     .attr("x", width/3)
     .attr("y", height-5) 
     .text((0).toFixed(2)+"/"+2*myBw+"kg")
@@ -825,7 +826,7 @@ function drawPictogramsArea(){
       });
 
   pictogramsArea.append("text")
-    .attr("class", "text-label")
+    .attr("class", "textpictograms")
     .attr("x", width/3)
     .attr("y", height+15) 
     .text((0).toFixed(2)+"%")
@@ -858,7 +859,7 @@ function drawPictogramsArea(){
     .attr("y2", height-scale(benchY));
 
   pictogramsArea.append("text")
-    .attr("class", "text-label")
+    .attr("class", "textpictograms")
     .attr("x", width*(2/3))
     .attr("y", height-5) 
     .text((0).toFixed(2)+"/"+1.5*myBw+"kg")
@@ -877,7 +878,7 @@ function drawPictogramsArea(){
       });
 
   pictogramsArea.append("text")
-    .attr("class", "text-label")
+    .attr("class", "textpictograms")
     .attr("x", width*(2/3))
     .attr("y", height+15) 
     .text((0).toFixed(2)+"%")

@@ -84,7 +84,17 @@ body{
 }
 
 .descr{
-  font-size: 120%;
+  font-size: 1.2vh;
+}
+
+.text{
+  font-size: 0.9vh;
+  font-weight: bold;
+}
+
+.textpictograms{
+  font-size: 1.2vh;
+  font-weight: bold;
 }
 
 .label{
