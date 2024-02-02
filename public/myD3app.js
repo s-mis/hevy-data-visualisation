@@ -8,6 +8,8 @@ var benchData;
 var deadliftData;
 var squatData;
 
+const color = "gold"
+
 // area variables
 var radialBarchartArea;
 var pictogramsArea;
@@ -17,7 +19,9 @@ var lineChartsArea3;
 var radialChartArea;
 var horizontalBarArea;
 
-var rpeMap = new Map([
+const monthNames = ['NOV', 'DEC','JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT'];
+
+const rpeMap = new Map([
   [6, 4],
   [7, 3],
   [7.5, 2],
@@ -41,8 +45,17 @@ var tooltip;
 var gradientSetsPerGroup;
 var colorGr;
 
-var gradientRpe;
-var colorRpe;
+var colorRpe = d3.scaleLinear()
+                .domain([6,7.5, 8, 10])
+                .range([color,color, 'green', 'green']);;
+                ;
+var colorGr = d3.scaleLinear()
+                .domain([0,12, 15,20,23, 29])
+                .range([color,color, 'green', 'green',color, color]);;
+
+var colorRadBars = d3.scaleLinear()
+                     .domain([0,90,100,111])
+                     .range([color,'green','green',color])
 
 /*Loading data from CSV file and editing the properties to province codes. Unary operator plus is used to save the data as numbers (originally imported as string)*/
 d3.csv("./public/workout_data_preprocessed.csv", function(d) {
@@ -96,9 +109,6 @@ function init() {
   selected_week = 1;
   previous_selected_week = 1;
 
-
-
-
   lineChartsArea1 = d3.select("#lineCharts_div").append("svg")
     .attr("id", "lineChart1")
     .attr("width", d3.select("#lineCharts_div").node().clientWidth)
@@ -111,20 +121,6 @@ function init() {
     .attr("id", "lineChart3")
     .attr("width", d3.select("#lineCharts_div").node().clientWidth)
     .attr("height", d3.select("#lineCharts_div").node().clientHeight/3)
-
-
-  colorGr = d3.interpolateRgbBasis(["purple", "green", "green", "purple"]);
-  colorRpe = d3.interpolateRgbBasis(["purple",  "green"]);
-  
-  gradientSetsPerGroup = d3.scaleLinear()
-                           .domain([0,12,20,29])
-                           .range([0,0.333,0.666,1])
-                           .interpolate((i, j) => (t) => colorGr(i + t * (j - i)));
-  gradientRpe = d3.scaleLinear()
-                  .domain([6,8,10])
-                  .range([0,1])
-                  .interpolate((i, j) => (t) => colorRpe(i + t * (j - i)));
-
 } 
 
 
@@ -180,7 +176,7 @@ function drawradialBarchart(){
     radialBarchartArea
     .append("path")
     .attr("id", i)
-    .attr("fill", "#D4AF37")
+    .attr("fill", colorRadBars(sets))
     .attr("d", d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(y(sets))
@@ -215,7 +211,7 @@ function drawradialBarchart(){
     .on("mouseout", function(d) {
       d3.select(this).transition()
         .duration('50')
-        .attr('fill', '#D4AF37');
+        .attr('fill', colorRadBars(sets));
 
     });
     radialBarchartArea.append("g")
@@ -228,6 +224,7 @@ function drawradialBarchart(){
       .style("font-size", "10px")
       .attr("alignment-baseline", "middle")
   }
+  
 }
 
 function drawlineCharts() {
@@ -311,12 +308,59 @@ function drawlineCharts() {
     .attr("class", "axis")
     .call(d3.axisLeft(y3));
 
+  lineChartsArea1.append("linearGradient")
+    .attr("id", "line-gradient1")
+    .attr("gradientUnits", "userSpaceOnUse")
+    .attr("x1", 0)
+    .attr("y1", y1(40))
+    .attr("x2", 0)
+    .attr("y2", y1(100))
+    .selectAll("stop")
+      .data([
+        {offset: "0%", color: "yellow"},
+        {offset: "100%", color: "green"}
+      ])
+    .enter().append("stop")
+      .attr("offset", function(d) { return d.offset; })
+      .attr("stop-color", function(d) { return d.color; });
+  lineChartsArea1.append("linearGradient")
+    .attr("id", "line-gradient2")
+    .attr("gradientUnits", "userSpaceOnUse")
+    .attr("x1", 0)
+    .attr("y1", y2(60))
+    .attr("x2", 0)
+    .attr("y2", y2(180))
+    .selectAll("stop")
+      .data([
+        {offset: "0%", color: "yellow"},
+        {offset: "100%", color: "green"}
+      ])
+    .enter().append("stop")
+      .attr("offset", function(d) { return d.offset; })
+      .attr("stop-color", function(d) { return d.color; });
+  lineChartsArea1.append("linearGradient")
+    .attr("id", "line-gradient3")
+    .attr("gradientUnits", "userSpaceOnUse")
+    .attr("x1", 0)
+    .attr("y1", y3(40))
+    .attr("x2", 0)
+    .attr("y2", y3(120))
+    .selectAll("stop")
+      .data([
+        {offset: "0%", color: "yellow"},
+        {offset: "100%", color: "green"}
+      ])
+    .enter().append("stop")
+      .attr("offset", function(d) { return d.offset; })
+      .attr("stop-color", function(d) { return d.color; });
+
+
 
   // Plot the lines
   lineChartsArea1.append("path")
       .datum(maxPerWeekBench)
       .attr("fill", "none")
-      .attr("stroke", "#D4AF37")
+      .attr("stroke", "url(#line-gradient1)")
       .attr("stroke-width", 1.5)
       .attr("transform", "translate("+margin.left+",0)")
       .attr("d", d3.line()
@@ -326,7 +370,7 @@ function drawlineCharts() {
   lineChartsArea2.append("path")
       .datum(maxPerWeekDead)
       .attr("fill", "none")
-      .attr("stroke", "#D4AF37")
+      .attr("stroke", "url(#line-gradient2)")
       .attr("stroke-width", 1.5)
       .attr("transform", "translate("+margin.left+",0)")
       .attr("d", d3.line()
@@ -336,7 +380,7 @@ function drawlineCharts() {
   lineChartsArea3.append("path")
       .datum(maxPerWeekSquat)
       .attr("fill", "none")
-      .attr("stroke", "#D4AF37")
+      .attr("stroke", "url(#line-gradient3)")
       .attr("stroke-width", 1.5)
       .attr("transform", "translate("+margin.left+",0)")
       .attr("d", d3.line()
@@ -552,7 +596,7 @@ function drawPolarChart(){
       .endAngle(x(key) + x.bandwidth());
 
     radialChartArea.append("path")
-      .attr("fill", "#D4AF37")
+      .attr("fill", colorGr(last_value))
       .style("stroke", "none")
       .attr("d", arc)
       .transition()
@@ -565,7 +609,9 @@ function drawPolarChart(){
           arc.outerRadius(radius);
           return arc(null);
         };
-    });
+    })
+      .attr("fill", colorGr(curr_value));
+
     var rotateAngle = ((x(key) + x.bandwidth() / 2) * 180 / Math.PI)
     var textG = radialChartArea.append("g")
       .attr("text-anchor", "middle")
@@ -645,15 +691,19 @@ function drawPolarChart(){
         .style("text-anchor", "middle")
         .style("color", "black");
 
+
     // Y axis
     var y = d3.scaleBand()
       .range([ 0, height ])
       .domain(Array.from(prev_week.keys()).sort())
       .padding(.3);
+      
     horizontalBarArea.append("g")
       .call(d3.axisLeft(y))
       .style("color", "black")
 
+    horizontalBarArea.selectAll(".tick text")
+      .attr("font-size","150%");
     Array.from(prev_week.keys()).forEach(key => {
       horizontalBarArea
         .append("rect")
@@ -661,11 +711,12 @@ function drawPolarChart(){
         .attr("y",  y(key) )
         .attr("width", x(prev_week.get(key)))
         .attr("height", y.bandwidth() )
-        .attr("fill", "#D4AF37")
+        .attr("fill", colorRpe(prev_week.get(key)))
         .transition()
           .duration(1000)
           .ease(d3.easeExpOut)
           .attr("width", x(curr_week.get(key)))
+          .attr("fill", colorRpe(curr_week.get(key)))
     });
 
 
@@ -677,6 +728,8 @@ function drawPolarChart(){
       .attr("y2", height)
       .style("stroke", "red") 
       .style("stroke-width", 2)
+
+    
   } 
 
 function getMaxRM(){
@@ -694,6 +747,7 @@ function getMaxRM(){
 }
 
 function drawPictogramsArea(){
+  console.log(d3.time)
   var margin = {top: 0, right: 0, bottom: 0, left: 0},
     width = d3.select("#pictograms_div").node().clientWidth - margin.left - margin.right,
     height = d3.select("#pictograms_div").node().clientHeight - margin.top - margin.bottom;
@@ -725,6 +779,7 @@ function drawPictogramsArea(){
     .attr('height', imageSize)
     .attr("xlink:href", "public/images/s.png")
     .attr("transform", "translate("+imageSize/4+",0)")
+
   pictogramsArea.append("svg:image")
     .attr('x', width*(2/3))
     .attr('y', height-imageSize)
@@ -746,13 +801,15 @@ function drawPictogramsArea(){
     .attr("y1", height)
     .attr("x2", width/3)
     .attr("y2", height)
-    .style("stroke", "#D4AF37") 
+    .style("stroke", color) 
     .style("stroke-width", 2)
     .transition()
     .duration(2500)
     .ease(d3.easeExpOut)
     .attr("y1", height-scale(deadY))
     .attr("y2", height-scale(deadY));
+
+    
 
   pictogramsArea.append("text")
     .attr("class", "textpictograms")
@@ -798,7 +855,7 @@ function drawPictogramsArea(){
     .attr("y1", height)
     .attr("x2", width*(2/3))
     .attr("y2", height)
-    .style("stroke", "#D4AF37") 
+    .style("stroke", color) 
     .style("stroke-width", 2)
     .transition()
     .duration(2500)
@@ -850,7 +907,7 @@ function drawPictogramsArea(){
     .attr("y1", height)
     .attr("x2", width)
     .attr("y2", height)
-    .style("stroke", "#D4AF37") 
+    .style("stroke", color) 
     .style("stroke-width", 2)
     .transition()
     .duration(2500)
