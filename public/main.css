@@ -87,6 +87,11 @@ body{
   font-size: 1.2vh;
 }
 
+.descrleg{
+  font-size: 1.2vh;
+  font-weight: bold;
+}
+
 .text{
   font-size: 0.9vh;
   font-weight: bold;

@@ -51,11 +51,11 @@ var colorRpe = d3.scaleLinear()
                 ;
 var colorGr = d3.scaleLinear()
                 .domain([0,12, 15,20,23, 29])
-                .range([color,color, 'green', 'green',color, color]);;
+                .range([color,color, 'green', 'green',"red", "red"]);;
 
 var colorRadBars = d3.scaleLinear()
                      .domain([0,90,100,111])
-                     .range([color,'green','green',color])
+                     .range([color,'green','green',"red"])
 
 /*Loading data from CSV file and editing the properties to province codes. Unary operator plus is used to save the data as numbers (originally imported as string)*/
 d3.csv("./public/workout_data_preprocessed.csv", function(d) {
@@ -159,6 +159,53 @@ function drawradialBarchart(){
   var y = d3.scaleRadial()
             .range([innerRadius, outerRadius]) 
             .domain([0, 120]);
+
+    // Color gradient legend
+  var gradient = d3.select("#radialBarchart_div").select("svg").append("linearGradient")
+                        .attr("id", "svgGradient")
+                        .attr("x1", "0%")
+                        .attr("y1", "0%")
+                        .attr("x2", "0%")
+                        .attr("y2", "100%")
+  gradient.append("stop")
+          .attr("offset","0%")
+          .attr("stop-color",color)
+  gradient.append("stop")
+          .attr("offset","50%")
+          .attr("stop-color","green")
+  gradient.append("stop")
+          .attr("offset","100%")
+          .attr("stop-color","red")
+
+  d3.select("#radialBarchart_div").select("svg").append("rect")
+                 .attr("fill", "url(#svgGradient)")
+                 .attr("x", width - 25)
+                 .attr("y", height/6)
+                 .attr("width", 25)
+                 .attr("height", height/1.5)
+
+  // add text to the legend
+  d3.select("#radialBarchart_div").select("svg").append("text")
+    .attr("class","descrleg")
+    .attr("x", width - 30)
+    .attr("y", height/6 + 10) 
+    .attr("text-anchor","end")
+    .text("Undertraining")
+    .style("fill", "black")        
+  d3.select("#radialBarchart_div").select("svg").append("text")
+    .attr("class","descrleg")
+    .attr("x", width - 30)
+    .attr("y", height/6  + height/1.5) 
+    .attr("text-anchor","end")
+    .text("Overtraining")
+    .style("fill", "black")     
+  d3.select("#radialBarchart_div").select("svg").append("text")
+    .attr("class","descrleg")
+    .attr("x", width - 30)
+    .attr("y", height/6  + (height/1.5)/2) 
+    .attr("text-anchor","end")
+    .text("Optimal")
+    .style("fill", "black")     
 
   tooltip = d3.select("body")
     .append("div")
@@ -583,6 +630,8 @@ function drawPolarChart(){
   const x = d3.scaleBand()
               .range([0, Math.PI*2])
               .domain(muscleGroups)
+
+
   // Iterate over sorted keys with forEach
   var indx = 0;
   muscleGroups.forEach(key => {
